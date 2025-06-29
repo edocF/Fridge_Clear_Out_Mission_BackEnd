@@ -3,6 +3,8 @@ import com.example.backend.mapper.UserMapper;
 import com.example.backend.pojo.LoginInfo;
 import com.example.backend.pojo.Result;
 import com.example.backend.pojo.User;
+import com.example.backend.service.FoodService;
+import com.example.backend.service.FridgeService;
 import com.example.backend.service.LoginService;
 import com.example.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,10 @@ public class LoginController {
     private LoginService loginService;
     @Autowired
     private UserService userService;
-       @PostMapping("/login")
+    @Autowired
+    private FridgeService fridgeService;
+
+    @PostMapping("/login")
     public Result login(@RequestBody User user) {
 
            log.info("Login User: {}", user);
@@ -33,12 +38,13 @@ public class LoginController {
 
     @PostMapping("/register")
     public Result register(@RequestBody User user) {
-           log.info("Register User: {}", user);
+        log.info("Register User: {}", user);
         List<User> users = userService.register(user);
         if(!users.isEmpty()){
             return Result.error();
         }
         userService.add(user);
+        fridgeService.add(user.getId());
         return Result.success();
     }
 

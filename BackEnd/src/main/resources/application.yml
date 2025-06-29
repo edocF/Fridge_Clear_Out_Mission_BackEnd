@@ -12,6 +12,13 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true
 
+vivo:
+  ai:
+    app-id: 2025303656       # 从vivo AIGC官网获取
+    app-key: kcpnSmTdTrhEHlNy     # 从vivo AIGC官网获取
+    model-name: vivo-BlueLM-TB-Pro   # 可选，默认值已在类中设置
+    temperature: 0.7                 # 可选，默认值已在类中设置
+    max-tokens: 512                  # 可选，默认值已在类中设置
 #aliyun:
 #  oss:
 #    endpoint: https://oss-cn-beijing.aliyuncs.com
