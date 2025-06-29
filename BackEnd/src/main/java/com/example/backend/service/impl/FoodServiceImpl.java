@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -33,6 +34,19 @@ public class FoodServiceImpl implements FoodService {
         foodMapper.add(food);
     return;
     }
+
+    @Override
+    public List<Food> getFoodList() {
+        Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
+        return foodMapper.getFoodList(fridgeId);
+    }
+
+    @Override
+    public void deleteFood(List<Integer> ids) {
+        Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
+        foodMapper.deleteFood(fridgeId,ids);
+    }
+
     private Integer getCurrentUserId() {
         return CurrentHold.getCurrentUserId();
     }

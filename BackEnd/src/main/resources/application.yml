@@ -8,6 +8,7 @@ spring:
     url: jdbc:mysql://localhost:3306/fridge_missiondb
 
 mybatis:
+  mapper-locations: classpath:com.example.backend.mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: true

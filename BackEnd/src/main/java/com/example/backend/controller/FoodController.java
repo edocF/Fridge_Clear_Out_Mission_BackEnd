@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
 import com.example.backend.pojo.FoodInfo;
 import com.example.backend.pojo.Result;
@@ -8,10 +9,9 @@ import com.example.backend.service.FoodService;
 import com.example.backend.utils.CurrentHold;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -35,5 +35,16 @@ public class FoodController {
         return Result.success();
     }
 
+    @GetMapping()
+    public Result getFoodList(){
+        List<Food> foods = foodService.getFoodList();
+        return Result.success(foods);
+    }
+
+    @PostMapping("/delete")
+    public Result deleteFood(@RequestParam List<Integer> ids) {
+        foodService.deleteFood(ids);
+        return Result.success();
+    }
 
 }
