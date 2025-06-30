@@ -19,9 +19,11 @@ vivo:
     app-key: kcpnSmTdTrhEHlNy     # 从vivo AIGC官网获取
     model-name: vivo-BlueLM-TB-Pro   # 可选，默认值已在类中设置
     temperature: 0.9                 # 可选，默认值已在类中设置
-    max-tokens: 512                  # 可选，默认值已在类中设置
-#aliyun:
-#  oss:
-#    endpoint: https://oss-cn-beijing.aliyuncs.com
-#    bucketName: f-java-web01
-#    region: cn-beijing
+    max-tokens: 4096                  # 可选，默认值已在类中设置
+    image-model-name: BlueLM-Vision-prd
+
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucketName: f-java-web01
+    region: cn-beijing
