@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
+import com.example.backend.promptStrategy.GenerateFreshnessReportStrategy;
 import com.example.backend.promptStrategy.GetFoodInfoByImageStrategy;
 import com.example.backend.promptStrategy.GetFoodNutritionByNameStrategy;
 import com.example.backend.promptStrategy.PromptStrategy;
@@ -20,10 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -34,11 +32,13 @@ public class AICallServiceImpl implements AICallService {
     private AIConfig aiConfig;
     @Autowired
     private AliyunOSSOperator ossOperator;
+    private PromptStrategy generateFreshnessReportStrategy;
 
     @Autowired
     public AICallServiceImpl(RestTemplate restTemplate, AIConfig aiConfig) {
         this.restTemplate = restTemplate;
         this.aiConfig = aiConfig;
+        this.generateFreshnessReportStrategy = new GenerateFreshnessReportStrategy();
     }
 
     @Override
@@ -60,6 +60,13 @@ public class AICallServiceImpl implements AICallService {
         Food food = getFoodNutrition(foodName);
         food.setName(foodName);
         return food;
+    }
+
+    @Override
+    public String generateFreshnessReport(List<Food> foods) {
+        PromptStrategy promptStrategy = this.generateFreshnessReportStrategy;
+        Object[] params = new Object[]{foods};
+        return (String) GetInfoFromAI(promptStrategy, params);
     }
 
     public static String convertToBase64(MultipartFile file) throws Exception {
