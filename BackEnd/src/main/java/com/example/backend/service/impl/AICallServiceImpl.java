@@ -2,23 +2,25 @@ package com.example.backend.service.impl;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
+import com.example.backend.promptStrategy.GetFoodInfoByImageStrategy;
 import com.example.backend.promptStrategy.GetFoodNutritionByNameStrategy;
 import com.example.backend.promptStrategy.PromptStrategy;
 import com.example.backend.service.AICallService;
 import com.example.backend.utils.AIConfig;
+import com.example.backend.utils.AliyunOSSOperator;
 import com.example.backend.utils.VivoAuth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,9 +31,12 @@ public class AICallServiceImpl implements AICallService {
     private static final String API_URL = "https://api-ai.vivo.com.cn/vivogpt/completions";
     private static final String API_PATH = "/vivogpt/completions";
     private final RestTemplate restTemplate;
-    private final AIConfig aiConfig;
+    private AIConfig aiConfig;
     @Autowired
-    public AICallServiceImpl(RestTemplate restTemplate, AIConfig aiConfig, PromptStrategy promptStrategy) {
+    private AliyunOSSOperator ossOperator;
+
+    @Autowired
+    public AICallServiceImpl(RestTemplate restTemplate, AIConfig aiConfig) {
         this.restTemplate = restTemplate;
         this.aiConfig = aiConfig;
     }
@@ -40,7 +45,51 @@ public class AICallServiceImpl implements AICallService {
     public Food getFoodNutrition(String foodName) throws AIException {
        PromptStrategy promptStrategy = new GetFoodNutritionByNameStrategy();
        Object[] params = new Object[]{foodName};
-       return (Food) GetInfoFromAI(promptStrategy,params);
+        Food food = (Food) GetInfoFromAI(promptStrategy, params);
+        food.setName(foodName);
+        return food;
+    }
+
+    @Override
+    public Food getFoodInfoByImage(MultipartFile file) throws Exception {
+        PromptStrategy promptStrategy = new GetFoodInfoByImageStrategy();
+        String base64Image = convertToBase64(file);
+        Object[] params = new Object[]{base64Image};
+        String foodName = (String) GetInfoFromAI(promptStrategy, params);
+        log.info("food: " + foodName);
+        Food food = getFoodNutrition(foodName);
+        food.setName(foodName);
+        return food;
+    }
+
+    public static String convertToBase64(MultipartFile file) throws Exception {
+        // 获取文件的 MIME 类型
+        String contentType = file.getContentType();
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+        // 确定文件格式对应的前缀
+        String formatPrefix = getFormatPrefix(contentType);
+
+        // 读取文件内容并进行 Base64 编码
+        byte[] fileContent = file.getBytes();
+        String base64Encoded = Base64.getEncoder().encodeToString(fileContent);
+
+        // 返回完整的 Base64 字符串（包含数据前缀）
+        return formatPrefix + base64Encoded;
+    }
+
+    private static String getFormatPrefix(String contentType) {
+        if (contentType.startsWith("image/jpeg")) {
+            return "data:image/JPEG;base64,";
+        } else if (contentType.startsWith("image/png")) {
+            return "data:image/PNG;base64,";
+        } else if (contentType.startsWith("image/gif")) {
+            return "data:image/GIF;base64,";
+        } else {
+            // 默认处理其他类型
+            return "data:" + contentType + ";base64,";
+        }
     }
 
     private Object GetInfoFromAI(PromptStrategy promptStrategy,Object... params) throws AIException {
@@ -53,7 +102,15 @@ public class AICallServiceImpl implements AICallService {
             queryParams.put("requestId", requestId.toString());
             String queryStr = mapToQueryString(queryParams);
             //产生请求体
-            Map<String, Object> requestBody = buildRequestBody(promptStrategy,sessionId.toString(),params);
+            Map<String,Object> requestBody;
+            if(promptStrategy instanceof GetFoodInfoByImageStrategy){
+                log.info("GetFoodInfoByImageStrategy");
+                requestBody = buildRequestBodyByImageStrategy(promptStrategy,params);
+                log.info("requestBody: {}", requestBody);
+            }
+            else{
+                requestBody = buildRequestBody(promptStrategy, sessionId.toString(), params);
+            }
             //产生请求头
             HttpHeaders headers = null;
             try {
@@ -80,10 +137,21 @@ public class AICallServiceImpl implements AICallService {
             throw new AIException("AI调用失败" + params, e);
         }
     }
+    private Map<String,Object> buildRequestBodyByImageStrategy(PromptStrategy promptStrategy,Object... params) throws AIException {
+        Map<String,Object> requestBody = new HashMap<>();
+        requestBody.put("model",aiConfig.getImageModelName());
+        log.info("model: " + aiConfig.getImageModelName());
+        requestBody.put("sessionId",UUID.randomUUID().toString());
+        log.info("sessionId: " + requestBody.get("sessionId"));
+        requestBody.put("messages",promptStrategy.buildMessage(params));
+        log.info("requestBody In BuildRequestBody: {}", requestBody);
+        return requestBody;
+    }
     //构建请求体
     private Map<String, Object> buildRequestBody(PromptStrategy promptStrategy,String sessionId,Object... params) {
         Map<String,Object> requestBody = new HashMap<>();
         requestBody.put("prompt",promptStrategy.buildPrompt(params));
+        log.info("model: " + aiConfig.getModelName());
         requestBody.put("model",aiConfig.getModelName());
         requestBody.put("sessionId",sessionId.toString());
         requestBody.put("extra",buildExtraParam());
@@ -98,7 +166,7 @@ public class AICallServiceImpl implements AICallService {
     }
 
     //解析响应
-    private Food parseResponse(PromptStrategy promptStrategy,ResponseEntity<String> response, Object... params) {
+    private Object parseResponse(PromptStrategy promptStrategy,ResponseEntity<String> response, Object... params) {
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new AIException("AI调用失败,状态码:" + response.getStatusCode() + " .错误信息: " + response.getBody());
         }
@@ -126,7 +194,7 @@ public class AICallServiceImpl implements AICallService {
                 throw new AIException("AI返回内容为空");
             }
 
-            return (Food) promptStrategy.parseContent(content,params);
+            return  promptStrategy.parseContent(content,params);
         } catch (JsonProcessingException e) {
             throw new AIException("解析AI响应失败", e);
         }
@@ -147,6 +215,5 @@ public class AICallServiceImpl implements AICallService {
         }
         return queryString.toString();
     }
-
 
 }

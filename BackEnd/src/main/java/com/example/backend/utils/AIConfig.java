@@ -11,6 +11,7 @@ public class AIConfig {
     private String appId;
     private String appKey;
     private String modelName;
+    private String imageModelName;
     private double temperature;
     private int maxTokens;
 }

@@ -10,6 +10,7 @@ import com.example.backend.utils.CurrentHold;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,4 +48,10 @@ public class FoodController {
         return Result.success();
     }
 
+    @PostMapping("/photo")
+    public Result analyzeFoodImage(@RequestParam("file") MultipartFile file) throws Exception {
+            Food food = callService.getFoodInfoByImage(file);
+            foodService.add(food);
+            return Result.success(food);
+    }
 }
