@@ -16,4 +16,7 @@ public interface FoodMapper {
     void deleteFood(Integer fridgeId, List<Integer> ids);
     @Update("update foods set number = #{number} where fridge_id = #{fridgeId} AND id = #{id};")
     void updateFood(Integer id, Integer number, Integer fridgeId);
+
+    @Select("select * from foods where fridge_id = #{fridgeId} AND expired = 0;")
+    List<Food> getValidFoodList(Integer fridgeId);
 }

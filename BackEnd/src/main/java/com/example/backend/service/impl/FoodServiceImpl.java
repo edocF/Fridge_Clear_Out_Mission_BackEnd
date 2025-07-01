@@ -62,6 +62,13 @@ public class FoodServiceImpl implements FoodService {
          }
     }
 
+    @Override
+    public List<Food> getValidFood() {
+        Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
+        List<Food> foods = foodMapper.getValidFoodList(fridgeId);
+        return List.of();
+    }
+
     private Integer getCurrentUserId() {
         return CurrentHold.getCurrentUserId();
     }

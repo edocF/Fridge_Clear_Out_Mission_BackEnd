@@ -2,10 +2,9 @@ package com.example.backend.service.impl;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
-import com.example.backend.promptStrategy.GenerateFreshnessReportStrategy;
-import com.example.backend.promptStrategy.GetFoodInfoByImageStrategy;
-import com.example.backend.promptStrategy.GetFoodNutritionByNameStrategy;
-import com.example.backend.promptStrategy.PromptStrategy;
+import com.example.backend.pojo.FoodInfoForRecipe;
+import com.example.backend.pojo.RecipeOption;
+import com.example.backend.promptStrategy.*;
 import com.example.backend.service.AICallService;
 import com.example.backend.utils.AIConfig;
 import com.example.backend.utils.AliyunOSSOperator;
@@ -65,6 +64,13 @@ public class AICallServiceImpl implements AICallService {
     public String generateFreshnessReport(List<Food> foods) {
         PromptStrategy promptStrategy = this.generateFreshnessReportStrategy;
         Object[] params = new Object[]{foods};
+        return (String) GetInfoFromAI(promptStrategy, params);
+    }
+
+    @Override
+    public String generateRecipe(RecipeOption recipeOption, List<FoodInfoForRecipe> foodInfoForRecipe) throws AIException {
+        PromptStrategy promptStrategy = new GenerateRecipeStrategy();
+        Object[] params = new Object[]{recipeOption, foodInfoForRecipe};
         return (String) GetInfoFromAI(promptStrategy, params);
     }
 
