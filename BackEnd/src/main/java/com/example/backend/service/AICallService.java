@@ -2,6 +2,8 @@ package com.example.backend.service;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
+import com.example.backend.pojo.FoodInfoForRecipe;
+import com.example.backend.pojo.RecipeOption;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,4 +15,6 @@ public interface AICallService {
     Food getFoodInfoByImage(MultipartFile file) throws Exception;
 
     String generateFreshnessReport(List<Food> foodList);
+
+    String generateRecipe(RecipeOption recipeOption, List<FoodInfoForRecipe> foodInfoForRecipe) throws AIException;
 }

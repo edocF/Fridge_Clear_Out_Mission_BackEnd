@@ -14,4 +14,6 @@ public interface FoodService {
     void deleteFood(List<Integer> ids);
 
     void updateFood(FoodInfoForUpdate foodInfoForUpdate);
+
+    List<Food> getValidFood();
 }

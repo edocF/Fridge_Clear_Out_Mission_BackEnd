@@ -59,4 +59,10 @@ public class FoodController {
         foodService.updateFood(foodInfoForUpdate);
         return Result.success();
     }
+
+    @GetMapping("/validDate")
+    public Result getValidFood() {
+        List<Food> validFoods = foodService.getValidFood();
+        return Result.success(validFoods);
+    }
 }
