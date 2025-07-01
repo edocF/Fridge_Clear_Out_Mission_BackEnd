@@ -1,10 +1,7 @@
 package com.example.backend.mapper;
 
 import com.example.backend.pojo.Food;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,4 +14,6 @@ public interface FoodMapper {
     List<Food> getFoodList(Integer fridgeId);
 
     void deleteFood(Integer fridgeId, List<Integer> ids);
+    @Update("update foods set number = #{number} where fridge_id = #{fridgeId} AND id = #{id};")
+    void updateFood(Integer id, Integer number, Integer fridgeId);
 }

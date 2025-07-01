@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
 import com.example.backend.pojo.FoodInfo;
+import com.example.backend.pojo.FoodInfoForUpdate;
 import com.example.backend.pojo.Result;
 import com.example.backend.service.AICallService;
 import com.example.backend.service.FoodService;
@@ -26,7 +27,6 @@ public class FoodController {
 
     @PostMapping()
     public Result createFood(@RequestBody FoodInfo foodInfo) {
-        Food food = new Food();
         Food foodNutrition = callService.getFoodNutrition(foodInfo.getName());
         foodNutrition.setName(foodInfo.getName());
         log.info("foodNutrition: " + foodNutrition);
@@ -50,6 +50,13 @@ public class FoodController {
     public Result analyzeFoodImage(@RequestParam("file") MultipartFile file) throws Exception {
             Food food = callService.getFoodInfoByImage(file);
             foodService.add(food);
-            return Result.success(food);
+            return Result.success();
+    }
+
+    @PostMapping("/update")
+    public Result updateFood(@RequestBody FoodInfoForUpdate foodInfoForUpdate) {
+        log.info("foodInfoForUpdate: " + foodInfoForUpdate);
+        foodService.updateFood(foodInfoForUpdate);
+        return Result.success();
     }
 }
