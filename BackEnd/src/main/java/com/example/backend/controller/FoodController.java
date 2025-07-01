@@ -28,9 +28,7 @@ public class FoodController {
     public Result createFood(@RequestBody FoodInfo foodInfo) {
         Food food = new Food();
         Food foodNutrition = callService.getFoodNutrition(foodInfo.getName());
-        foodNutrition.setNumber(foodInfo.getNumber());
         foodNutrition.setName(foodInfo.getName());
-        log.info("foodInfoNumber: " + foodInfo.getNumber());
         log.info("foodNutrition: " + foodNutrition);
         foodService.add(foodNutrition);
         return Result.success();
