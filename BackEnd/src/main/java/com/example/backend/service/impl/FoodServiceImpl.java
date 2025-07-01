@@ -3,6 +3,7 @@ package com.example.backend.service.impl;
 import com.example.backend.mapper.FoodMapper;
 import com.example.backend.mapper.FridgeMapper;
 import com.example.backend.pojo.Food;
+import com.example.backend.pojo.FoodInfoForUpdate;
 import com.example.backend.service.FoodService;
 import com.example.backend.utils.CurrentHold;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -45,6 +47,19 @@ public class FoodServiceImpl implements FoodService {
     public void deleteFood(List<Integer> ids) {
         Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
         foodMapper.deleteFood(fridgeId,ids);
+    }
+
+    @Override
+    public void updateFood(FoodInfoForUpdate foodInfoForUpdate) {
+         if(foodInfoForUpdate.getNumber() == 0) {
+             List<Integer> ids = new ArrayList<>();
+             ids.add(foodInfoForUpdate.getId());
+             deleteFood(ids);
+         } else {
+             Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
+             log.info("fridgeId: " + fridgeId);
+             foodMapper.updateFood(foodInfoForUpdate.getId(), foodInfoForUpdate.getNumber(), fridgeId);
+         }
     }
 
     private Integer getCurrentUserId() {

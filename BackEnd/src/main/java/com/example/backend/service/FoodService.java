@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.pojo.Food;
+import com.example.backend.pojo.FoodInfoForUpdate;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface FoodService {
     List<Food> getFoodList();
 
     void deleteFood(List<Integer> ids);
+
+    void updateFood(FoodInfoForUpdate foodInfoForUpdate);
 }
