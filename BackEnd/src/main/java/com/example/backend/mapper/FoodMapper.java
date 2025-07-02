@@ -19,4 +19,7 @@ public interface FoodMapper {
 
     @Select("select * from foods where fridge_id = #{fridgeId} AND expired = 0;")
     List<Food> getValidFoodList(Integer fridgeId);
+
+    @Select("select * from foods where id = #{id};")
+    Food getFoodById(Integer id);
 }

@@ -2,6 +2,7 @@ package com.example.backend.service.impl;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
+import com.example.backend.pojo.FoodConsumption;
 import com.example.backend.pojo.FoodInfoForRecipe;
 import com.example.backend.pojo.RecipeOption;
 import com.example.backend.promptStrategy.*;
@@ -31,12 +32,17 @@ public class AICallServiceImpl implements AICallService {
     @Autowired
     private AliyunOSSOperator ossOperator;
     private PromptStrategy generateFreshnessReportStrategy;
+    private PromptStrategy generateNutritionReportStrategy;
+    private PromptStrategy generateConsumptionReportStrategy;
+    private PromptStrategy generateRecipeOptionReportStrategy;
 
     @Autowired
     public AICallServiceImpl(RestTemplate restTemplate, AIConfig aiConfig) {
         this.restTemplate = restTemplate;
         this.aiConfig = aiConfig;
         this.generateFreshnessReportStrategy = new GenerateFreshnessReportStrategy();
+        this.generateNutritionReportStrategy = new GenerateNutritionReportStrategy();
+        this.generateConsumptionReportStrategy = new GenerateConsumptionReportStrategy();
     }
 
     @Override
@@ -71,6 +77,20 @@ public class AICallServiceImpl implements AICallService {
     public String generateRecipe(RecipeOption recipeOption, List<FoodInfoForRecipe> foodInfoForRecipe) throws AIException {
         PromptStrategy promptStrategy = new GenerateRecipeStrategy();
         Object[] params = new Object[]{recipeOption, foodInfoForRecipe};
+        return (String) GetInfoFromAI(promptStrategy, params);
+    }
+
+    @Override
+    public String generateNutritionReport(List<FoodConsumption> consumptions, Object nutritionSummary) {
+        PromptStrategy promptStrategy = this.generateNutritionReportStrategy;
+        Object[] params = new Object[]{consumptions, nutritionSummary};
+        return (String) GetInfoFromAI(promptStrategy, params);
+    }
+
+    @Override
+    public String generateConsumptionReport(List<FoodConsumption> consumptions) {
+        PromptStrategy promptStrategy = this.generateConsumptionReportStrategy;
+        Object[] params = new Object[]{consumptions};
         return (String) GetInfoFromAI(promptStrategy, params);
     }
 

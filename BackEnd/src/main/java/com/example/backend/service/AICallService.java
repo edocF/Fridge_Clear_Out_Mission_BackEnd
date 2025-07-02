@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
+import com.example.backend.pojo.FoodConsumption;
 import com.example.backend.pojo.FoodInfoForRecipe;
 import com.example.backend.pojo.RecipeOption;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,4 +18,8 @@ public interface AICallService {
     String generateFreshnessReport(List<Food> foodList);
 
     String generateRecipe(RecipeOption recipeOption, List<FoodInfoForRecipe> foodInfoForRecipe) throws AIException;
+
+    String generateNutritionReport(List<FoodConsumption> consumptions, Object nutritionSummary);
+
+    String generateConsumptionReport(List<FoodConsumption> consumptions);
 }
