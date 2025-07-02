@@ -2,9 +2,10 @@ package com.example.backend.service.impl;
 
 import com.example.backend.exception.AIException;
 import com.example.backend.pojo.Food;
-import com.example.backend.pojo.FoodInfoForRecipe;
-import com.example.backend.pojo.RecipeOption;
-import com.example.backend.promptStrategy.*;
+import com.example.backend.promptStrategy.GenerateFreshnessReportStrategy;
+import com.example.backend.promptStrategy.GetFoodInfoByImageStrategy;
+import com.example.backend.promptStrategy.GetFoodNutritionByNameStrategy;
+import com.example.backend.promptStrategy.PromptStrategy;
 import com.example.backend.service.AICallService;
 import com.example.backend.utils.AIConfig;
 import com.example.backend.utils.AliyunOSSOperator;
@@ -18,6 +19,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -67,13 +69,6 @@ public class AICallServiceImpl implements AICallService {
         return (String) GetInfoFromAI(promptStrategy, params);
     }
 
-    @Override
-    public String generateRecipe(RecipeOption recipeOption, List<FoodInfoForRecipe> foodInfoForRecipe) throws AIException {
-        PromptStrategy promptStrategy = new GenerateRecipeStrategy();
-        Object[] params = new Object[]{recipeOption, foodInfoForRecipe};
-        return (String) GetInfoFromAI(promptStrategy, params);
-    }
-
     public static String convertToBase64(MultipartFile file) throws Exception {
         // 获取文件的 MIME 类型
         String contentType = file.getContentType();
@@ -82,6 +77,7 @@ public class AICallServiceImpl implements AICallService {
         }
         // 确定文件格式对应的前缀
         String formatPrefix = getFormatPrefix(contentType);
+
         // 读取文件内容并进行 Base64 编码
         byte[] fileContent = file.getBytes();
         String base64Encoded = Base64.getEncoder().encodeToString(fileContent);
@@ -148,7 +144,6 @@ public class AICallServiceImpl implements AICallService {
             throw new AIException("AI调用失败" + params, e);
         }
     }
-
     private Map<String,Object> buildRequestBodyByImageStrategy(PromptStrategy promptStrategy,Object... params) throws AIException {
         Map<String,Object> requestBody = new HashMap<>();
         requestBody.put("model",aiConfig.getImageModelName());

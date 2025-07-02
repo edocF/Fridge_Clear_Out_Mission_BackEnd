@@ -40,7 +40,8 @@ public class GenerateFreshnessReportStrategy implements PromptStrategy {
         sb.append("请根据上述食物数据，严格按照以下结构和要求生成报告，报告全文使用中文：\n\n");
         sb.append("1. 总体评价：用一两句精炼的话总结当前冰箱的整体存储状态。\n");
         sb.append("2. 【做得好的地方】：分析并列出1到2个用户做得好的存储习惯。\n");
-        sb.append("3. 【可以改进的地方】：分析并列出1到2个存储方面最值得关注的问题点，必须具体到食物名称。\n");
+        sb.append("3. 【可以改进的地方】：分析并列出1到2个最值得关注的问题点，必须具体到食物名称。\n");
+        sb.append("4. 【本周饮食小贴士】：根据即将过期的食物，给出一个简单、具体、可操作的食谱或饮食建议。\n");
         sb.append("风格应亲切、鼓励，避免批评。\n");
         sb.append("请开始分析并生成报告。\n");
         return sb.toString();

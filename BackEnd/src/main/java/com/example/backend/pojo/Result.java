@@ -25,6 +25,14 @@ public class Result {
         return result;
     }
 
+    public static Result success(String message) {
+        Result result = new Result();
+        result.code = 1;
+        result.message = message;
+        result.data = null;
+        return result;
+    }
+
     public static Result error() {
         Result result = new Result();
         result.code = 0;
@@ -38,7 +46,14 @@ public class Result {
         result.code = 0;
         result.message = message == null ? "error" : message;
         result.data = null;
-        result.message = message;
+        return result;
+    }
+
+    public static Result error(Integer code, String message) {
+        Result result = new Result();
+        result.code = code;
+        result.message = message == null ? "error" : message;
+        result.data = null;
         return result;
     }
 }
