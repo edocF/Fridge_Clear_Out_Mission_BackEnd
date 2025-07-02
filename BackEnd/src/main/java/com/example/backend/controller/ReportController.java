@@ -1,10 +1,14 @@
 package com.example.backend.controller;
 
 import com.example.backend.pojo.Result;
+import com.example.backend.pojo.NutritionReportRequest;
+import com.example.backend.pojo.ConsumptionReportRequest;
 import com.example.backend.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +37,34 @@ public class ReportController {
         log.info("开始生成食物保鲜报告...");
         String report = reportService.generateFreshnessReport();
         log.info("食物保鲜报告生成完毕。");
+        return Result.success(report);
+    }
+
+    /**
+     * 生成并返回当前用户的膳食营养报告。
+     * 当收到 POST /reports/nutrition 请求时，此方法被调用。
+     *
+     * @return Result 封装的AI生成的文本报告内容
+     */
+    @PostMapping("/nutrition")
+    public Result getNutritionReport(@RequestBody NutritionReportRequest request) {
+        log.info("开始生成膳食营养报告...");
+        String report = reportService.generateNutritionReport(request);
+        log.info("膳食营养报告生成完毕。");
+        return Result.success(report);
+    }
+
+    /**
+     * 生成并返回当前用户的食物消耗报告。
+     * 当收到 POST /reports/nutrition 请求时，此方法被调用。
+     *
+     * @return Result 封装的AI生成的文本报告内容
+     */
+    @PostMapping("/consumption")
+    public Result getConsumptionReport(@RequestBody ConsumptionReportRequest request) {
+        log.info("开始生成食物消耗报告...");
+        String report = reportService.generateConsumptionReport(request);
+        log.info("食物消耗报告生成完毕。");
         return Result.success(report);
     }
 }
