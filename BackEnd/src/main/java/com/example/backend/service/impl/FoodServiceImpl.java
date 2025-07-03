@@ -33,6 +33,7 @@ public class FoodServiceImpl implements FoodService {
         food.setCreateTime(LocalDateTime.now());
         food.setExpiryDate(LocalDateTime.now().plusDays(food.getExpiryDuration()));
         food.setUpdateTime(LocalDateTime.now());
+        food.setManufactureDate(LocalDateTime.now());
         food.setExpSoon(false);
         food.setExpired(false);
         Integer fridgeId = fridgeMapper.selectByUserId(getCurrentUserId());
