@@ -25,4 +25,5 @@ public class Food {
     private Integer fridgeId;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private LocalDateTime manufactureDate;
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,4 +18,7 @@ public class User {
     private String image;
     private LocalDateTime createTime;
     private Integer familyId;
+    private List<String> dietaryTaboos;
+    private String dietaryPreferences;
+    private String  seasoningPreferences;
 }

@@ -22,4 +22,10 @@ public interface FoodMapper {
 
     @Select("select * from foods where id = #{id};")
     Food getFoodById(Integer id);
+
+    @Select("select * from foods where fridge_id = #{fridgeId} AND (expired = 1 OR expSoon = 1);")
+    List<Food> getExpiringSoonAndExpiredFoods(Integer fridgeId);
+
+    @Select("select * from foods;")
+    List<Food> getAllFoodList();
 }

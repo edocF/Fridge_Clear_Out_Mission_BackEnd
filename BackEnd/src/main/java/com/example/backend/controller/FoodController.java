@@ -6,6 +6,7 @@ import com.example.backend.pojo.FoodInfo;
 import com.example.backend.pojo.FoodInfoForUpdate;
 import com.example.backend.pojo.Result;
 import com.example.backend.service.AICallService;
+import com.example.backend.service.ExpirationWarningService;
 import com.example.backend.service.FoodService;
 import com.example.backend.utils.CurrentHold;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +26,8 @@ public class FoodController {
     private FoodService foodService;
     @Autowired
     private AICallService callService;
+    @Autowired
+    private ExpirationWarningService expirationWarningService;
 
     @PostMapping()
     public Result createFood(@RequestBody FoodInfo foodInfo) {
@@ -64,5 +68,12 @@ public class FoodController {
     public Result getValidFood() {
         List<Food> validFoods = foodService.getValidFood();
         return Result.success(validFoods);
+    }
+
+    @GetMapping("/exp")
+    public Result getExpiredFood() {
+        List<Food> expiredFoods = expirationWarningService.getExpiringSoonAndExpiredFoods();
+        log.info("expiredFoods: " + expiredFoods);
+        return Result.success(expiredFoods);
     }
 }
