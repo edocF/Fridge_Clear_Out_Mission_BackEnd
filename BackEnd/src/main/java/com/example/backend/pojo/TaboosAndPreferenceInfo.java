@@ -7,12 +7,6 @@ import java.util.List;
 
 @Data
 public class TaboosAndPreferenceInfo {
-    @JsonProperty("username")
-    private String username;
-    
-    @JsonProperty("password")
-    private String password;
-    
     @JsonProperty("dietaryTaboos")
     private List<String> dietaryTaboos;
 
@@ -21,7 +15,4 @@ public class TaboosAndPreferenceInfo {
 
     @JsonProperty("seasoningPreferences")
     private String seasoningPreferences;
-    
-    @JsonProperty("image")
-    private String image;
 }

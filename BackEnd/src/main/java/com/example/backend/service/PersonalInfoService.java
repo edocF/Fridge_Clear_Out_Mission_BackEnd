@@ -11,4 +11,7 @@ public interface PersonalInfoService {
     void updateAvatar(String imageUrl);
     
     boolean isUsernameAvailable(String username);
+
+    void updateUsername(String username);
+    void updatePassword(String password);
 }

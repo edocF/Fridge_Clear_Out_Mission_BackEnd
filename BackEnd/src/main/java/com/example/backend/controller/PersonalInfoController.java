@@ -42,4 +42,29 @@ public class PersonalInfoController {
         personalInfoService.updateAvatar(imageUrl);
         return Result.success();
     }
+
+    @PostMapping("/update-username")
+    public Result updateUsername(@RequestBody Map<String, String> req) {
+        String username = req.get("username");
+        personalInfoService.updateUsername(username);
+        return Result.success();
+    }
+
+    @PostMapping("/update-password")
+    public Result updatePassword(@RequestBody Map<String, String> req) {
+        String password = req.get("password");
+        personalInfoService.updatePassword(password);
+        return Result.success();
+    }
+
+    @GetMapping("/test")
+    public Result testConnection() {
+        try {
+            User user = personalInfoService.getPersonalInfo();
+            return Result.success(user);
+        } catch (Exception e) {
+            log.error("测试连接失败", e);
+            return Result.error("测试连接失败: " + e.getMessage());
+        }
+    }
 }
