@@ -14,16 +14,16 @@ public class GetFoodNutritionByNameStrategy implements PromptStrategy{
     public String buildPrompt(Object... params) {
         String foodName = (String) params[0];
         return "请作为专业营养师，严格按照以下格式返回食物「" + foodName + "」的标准化营养信息与冰箱保质期。需注意：\n" +
-                "所有营养数值需精确到小数点后两位，以 500g 可食用部分为基准（若数据来源为 100g，需统一换算）；\n" +
+                "所有营养数值需精确到小数点后两位，以 100g 可食用部分为基准（若数据来源为 100g，需统一换算）；\n" +
                 "保质期仅保留冰箱冷藏条件下（4℃左右）的天数，必须为大于1的整数，避免区间值；\n " +
                 "表情符号需匹配食物属性（如水果用🍎、肉类用🥩、谷物用🌾等）；\n " +
                 "数据来源需优先参考《中国食物成分表》或权威营养数据库，确保不同输入下的同类食物数据口径一致。\n " +
                 "输出格式（严格遵循，x 为数字，表情符号需匹配食物类型）：\n" +
                 "名称:" + foodName + "\n" +
-                "热量(kcal/500g):xx.xx\n" +
-                "碳水(g/500g):xx.xx\n" +
-                "蛋白质(g/500g):xx.xx\n" +
-                "脂肪(g/500g):xx.xx\n" +
+                "热量(kcal/100g):xx.xx\n" +
+                "碳水(g/100g):xx.xx\n" +
+                "蛋白质(g/100g):xx.xx\n" +
+                "脂肪(g/100g):xx.xx\n" +
                 "表情符号:🍎\n" +
                 "保质期(天):xx";
     }
