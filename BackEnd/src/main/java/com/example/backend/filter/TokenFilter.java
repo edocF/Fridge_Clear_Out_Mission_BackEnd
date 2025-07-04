@@ -32,6 +32,13 @@ public class TokenFilter implements Filter {
 
         //3. 获取请求头中的令牌（token）。
         String jwt = request.getHeader("token");
+        // 如果没有token头，尝试从Authorization头获取
+        if (!StringUtils.hasLength(jwt)) {
+            String authHeader = request.getHeader("Authorization");
+            if (StringUtils.hasLength(authHeader) && authHeader.startsWith("Bearer ")) {
+                jwt = authHeader.substring(7); // 去掉"Bearer "前缀
+            }
+        }
 
         //4. 判断令牌是否存在，如果不存在，返回错误结果（未登录）。
         if(!StringUtils.hasLength(jwt)){ //jwt为空
@@ -45,10 +52,17 @@ public class TokenFilter implements Filter {
             Claims claims = JwtUtils.parseToken(jwt);
             Integer id = Integer.valueOf(claims.get("id").toString());
             CurrentHold.setCurrentUserId(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.info("解析令牌失败, 返回错误结果");
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            log.info("JWT令牌已过期: {}", e.getMessage());
             response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+            response.setHeader("Content-Type", "application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\":401,\"msg\":\"Token已过期，请重新登录\"}");
+            return;
+        } catch (Exception e) {
+            log.info("解析令牌失败: {}", e.getMessage());
+            response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+            response.setHeader("Content-Type", "application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\":401,\"msg\":\"Token无效，请重新登录\"}");
             return;
         }
 
