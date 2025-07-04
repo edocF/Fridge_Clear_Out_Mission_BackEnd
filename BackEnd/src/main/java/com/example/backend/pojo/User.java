@@ -1,5 +1,7 @@
 package com.example.backend.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,7 @@ public class User {
     private String image;
     private LocalDateTime createTime;
     private Integer familyId;
+    @TableField(typeHandler = JacksonTypeHandler.class)
     private List<String> dietaryTaboos;
     private String dietaryPreferences;
     private String  seasoningPreferences;
