@@ -4,7 +4,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: fht041029
+    password: Breeze029!
     url: jdbc:mysql://localhost:3306/fridge_missiondb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
   jackson:
     serialization:
