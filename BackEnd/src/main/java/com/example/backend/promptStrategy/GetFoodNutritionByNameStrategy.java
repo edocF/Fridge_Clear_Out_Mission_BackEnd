@@ -39,13 +39,13 @@ public class GetFoodNutritionByNameStrategy implements PromptStrategy{
                 // 名称不再包含emoji，无需提取
             } else if (line.startsWith("表情符号:")) {
                 food.setEmoji(line.substring(5));
-            } else if (line.startsWith("热量(kcal/500g):")) {
+            } else if (line.startsWith("热量(kcal/100g):")) {
                 food.setKcal(parseDouble(line, 14));
-            } else if (line.startsWith("碳水(g/500g):")) {
+            } else if (line.startsWith("碳水(g/100g):")) {
                 food.setCarb(parseDouble(line, 11));
-            } else if (line.startsWith("蛋白质(g/500g):")) {
+            } else if (line.startsWith("蛋白质(g/100g):")) {
                 food.setProtein(parseDouble(line, 12));
-            } else if (line.startsWith("脂肪(g/500g):")) {
+            } else if (line.startsWith("脂肪(g/100g):")) {
                 food.setFat(parseDouble(line, 11));
             } else if (line.startsWith("保质期(天):")) {
                 food.setExpiryDuration(parseInt(line, 7));

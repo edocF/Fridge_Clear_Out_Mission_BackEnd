@@ -18,6 +18,7 @@ public class PersonalInfoController {
     @GetMapping()
     public Result getPersonalInfo() {
        User user =  personalInfoService.getPersonalInfo();
+       log.info("user: {}", user);
        return Result.success(user);
     }
 
